@@ -10,8 +10,7 @@ namespace RestaurantAPI.Controllers
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Dish> Dishes { get; set; }
 
-        private string _connectionString =
-            "Server=(localdb)\\LocalDbServer;Database=RestaurantDb;Trusted_Connection=True";
+        private string _connectionString = "Server=(localdb)\\LocalDbServer;Database=RestaurantDb;Trusted_Connection=True";
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

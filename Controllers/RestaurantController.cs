@@ -12,6 +12,7 @@ using RestaurantAPI.Services;
 namespace RestaurantAPI.Controllers
 {
     [Route("api/restaurant")]
+    [ApiController] // automatycznie wywołuje walidację modelu ModelState.isValid..
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantDbContext _dbContext;
@@ -26,37 +27,24 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult ModifyRestaurant([FromRoute] int id, [FromBody] RestaurantModifyDto dto)
+        public ActionResult UpdateRestaurant([FromRoute] int id, [FromBody] RestaurantModifyDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _restaurantService.UpdateRestaurant(id, dto);
 
-            var isModified = _restaurantService.ModifyRestaurant(id, dto);
-
-            if (isModified)
-                //return Redirect("Restaurants was modified");
-                return Ok();
-
-            return BadRequest();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteRestaurant([FromRoute] int id)
         {
-            if (_restaurantService.DeleteRestaurant(id))
-                return NoContent();
+            _restaurantService.DeleteRestaurant(id);
 
-            return NotFound("Specific restaurant doesn't exist in database");
+            return NoContent();
         }
 
         [HttpPost]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var id = _restaurantService.CreateRestaurant(dto);
 
             return Created($"/api/restaurant/{id}", null);
@@ -76,12 +64,9 @@ namespace RestaurantAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<RestaurantDto> GetRestaurant([FromRoute] int id)
         {
-            var restaurant = _restaurantService.GetById(id);
+            _restaurantService.GetById(id);
 
-            if (restaurant is null)
-                return NotFound();
-
-            return Ok(restaurant);
+            return Ok();
         }
 
     }

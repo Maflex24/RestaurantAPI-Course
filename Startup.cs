@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using RestaurantAPI.Controllers;
 using RestaurantAPI.Entitites;
+using RestaurantAPI.Middleware;
 using RestaurantAPI.Services;
 
 namespace RestaurantAPI
@@ -36,6 +37,7 @@ namespace RestaurantAPI
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IRestaurantService, RestaurantService>();
+            services.AddScoped<ErrorHandlingMiddleware>();
 
             services.AddSwaggerGen(c =>
             {
@@ -55,6 +57,8 @@ namespace RestaurantAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantAPI v1"));
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 
