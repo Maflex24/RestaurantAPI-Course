@@ -64,9 +64,9 @@ namespace RestaurantAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<RestaurantDto> GetRestaurant([FromRoute] int id)
         {
-            _restaurantService.GetById(id);
+            var restaurant = _restaurantService.GetById(id);
 
-            return Ok();
+            return Ok(restaurant);
         }
 
     }
