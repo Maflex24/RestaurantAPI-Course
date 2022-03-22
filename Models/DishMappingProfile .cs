@@ -10,6 +10,7 @@ namespace RestaurantAPI.Models
         public DishMappingProfile()
         {
             CreateMap<CreateDishDto, Dish>();
+            CreateMap<Dish, DishDTO>();
 
             //CreateMap<CreateRestaurantDto, Restaurant>()
             //    .ForMember(r => r.Address,

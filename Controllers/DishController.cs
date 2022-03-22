@@ -1,12 +1,15 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using RestaurantAPI.Entitites;
 using RestaurantAPI.Models;
 using RestaurantAPI.Services;
 
 namespace RestaurantAPI.Controllers
 {
-    [Route("api/{restaurantId}/dish")]
+    [Route("api/restaurant/{restaurantId}/dish")]
     [ApiController]
     public class DishController : ControllerBase
     {
@@ -27,7 +30,23 @@ namespace RestaurantAPI.Controllers
         {
             var id = _dishService.CreateDish(restaurantId, createDishDto);
 
-            return Created($"/api/{restaurantId}/{id}", null);
+            return Created($"/api/restaurant/{restaurantId}/{id}", null);
+        }
+
+        [HttpGet]
+        public ActionResult GetAll([FromRoute] int restaurantId)
+        {
+            var results = _dishService.GetAllDishes(restaurantId);
+
+            return Ok(results);
+        }
+
+        [HttpGet("{dishId}")]
+        public ActionResult<DishDTO> GetDish([FromRoute] int restaurantId, [FromRoute] int dishId)
+        {
+            var dish = _dishService.GetDish(restaurantId, dishId);
+
+            return Ok(dish);
         }
     }
 }
