@@ -38,12 +38,7 @@ namespace RestaurantAPI.Services
 
         public ActionResult<int> CreateDish(int restaurantId, CreateDishDto dto)
         {
-            var restaurant = _dbContext
-                .Restaurants
-                .FirstOrDefault(r => r.Id == restaurantId);
-
-            if (restaurant == null)
-                throw new NotFoundException("Restaurant not found");
+            GetRestaurantById(restaurantId);
 
             var dish = _mapper.Map<Dish>(dto);
             dish.RestaurantId = restaurantId;
@@ -56,12 +51,7 @@ namespace RestaurantAPI.Services
 
         public List<DishDTO> GetAllDishes(int restaurantId)
         {
-            var restaurant = _dbContext
-                .Restaurants
-                .FirstOrDefault(r => r.Id == restaurantId);
-
-            if (restaurant == null)
-                throw new NotFoundException($"Restaurant was not found");
+            GetRestaurantById(restaurantId);
 
             var dishes = _dbContext
                 .Dishes
@@ -78,12 +68,7 @@ namespace RestaurantAPI.Services
 
         public DishDTO GetDish(int restaurantId, int dishId)
         {
-            var restaurant = _dbContext
-                .Restaurants
-                .FirstOrDefault(r => r.Id == restaurantId);
-
-            if (restaurant == null)
-                throw new NotFoundException("Restaurant not found");
+            GetRestaurantById(restaurantId);
 
             var dish = _dbContext
                 .Dishes
@@ -99,12 +84,7 @@ namespace RestaurantAPI.Services
 
         public void DeleteDishes(int restaurantId)
         {
-            var restaurant = _dbContext
-                .Restaurants
-                .FirstOrDefault(r => r.Id == restaurantId);
-
-            if (restaurant == null)
-                throw new NotFoundException("Restaurant not found");
+            GetRestaurantById(restaurantId);
 
             var dishes = _dbContext
                 .Dishes
@@ -112,6 +92,18 @@ namespace RestaurantAPI.Services
 
             _dbContext.Dishes.RemoveRange(dishes);
             _dbContext.SaveChanges();
+        }
+
+        private Restaurant GetRestaurantById(int restaurantId)
+        {
+            var restaurant = _dbContext
+                .Restaurants
+                .FirstOrDefault(r => r.Id == restaurantId);
+
+            if (restaurant == null)
+                throw new NotFoundException("Restaurant not found");
+
+            return restaurant;
         }
     }
 }
