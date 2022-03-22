@@ -20,6 +20,7 @@ namespace RestaurantAPI.Services
         public List<DishDTO> GetAllDishes(int restaurantId);
         public DishDTO GetDish(int restaurantId, int dishId);
         public void DeleteDishes(int restaurantId);
+        public void DeleteDish(int restaurantId, int dishId);
     }
     public class DishService : IDishService
     {
@@ -91,6 +92,21 @@ namespace RestaurantAPI.Services
                 .Where(d => d.RestaurantId == restaurantId);
 
             _dbContext.Dishes.RemoveRange(dishes);
+            _dbContext.SaveChanges();
+        }
+
+        public void DeleteDish(int restaurantId, int dishId)
+        {
+            GetRestaurantById(restaurantId);
+
+            var dish = _dbContext
+                .Dishes
+                .FirstOrDefault(d => d.Id == dishId && d.RestaurantId == restaurantId);
+
+            if (dish == null)
+                throw new NotFoundException("Dish not found, or is not assigned to this restaurant");
+
+            _dbContext.Remove(dish);
             _dbContext.SaveChanges();
         }
 
