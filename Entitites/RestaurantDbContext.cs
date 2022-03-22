@@ -25,6 +25,10 @@ namespace RestaurantAPI.Controllers
                 .Property(u => u.Email)
                 .IsRequired();
 
+            modelBuilder.Entity<User>()
+                .Property(u => u.DateOfBirth)
+                .IsRequired(false);
+
             modelBuilder.Entity<Restaurant>()
                 .Property(r => r.Name)
                 .IsRequired()

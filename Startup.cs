@@ -11,10 +11,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using RestaurantAPI.Controllers;
 using RestaurantAPI.Entitites;
 using RestaurantAPI.Middleware;
+using RestaurantAPI.Models;
 using RestaurantAPI.Services;
+using RestaurantAPI.Validators;
 
 namespace RestaurantAPI
 {
@@ -32,16 +37,22 @@ namespace RestaurantAPI
         // tu będziemy też konfigurować różne serwisy, np. związane z autentykacja uzytkowników
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+
+            //services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
 
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IDishService, DishService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<TimeRequestMiddleware>();
+
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             services.AddSwaggerGen(c =>
             {
