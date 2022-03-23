@@ -9,6 +9,8 @@ namespace RestaurantAPI.Models
     {
         public RestaurantMappingProfile()
         {
+            CreateMap<LoginDto, User>();
+
             CreateMap<RegisterUserDto, User>();
 
             CreateMap<Dish, DishDTO>();

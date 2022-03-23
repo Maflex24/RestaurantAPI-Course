@@ -10,10 +10,13 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using RestaurantAPI.Authentications;
 using RestaurantAPI.Controllers;
 using RestaurantAPI.Entitites;
 using RestaurantAPI.Middleware;
@@ -37,6 +40,27 @@ namespace RestaurantAPI
         // tu będziemy też konfigurować różne serwisy, np. związane z autentykacja uzytkowników
         public void ConfigureServices(IServiceCollection services)
         {
+            var authenticationSettings = new AuthenticationSettings();
+            Configuration.GetSection("Authentication").Bind(authenticationSettings); //pobiera(binduje) właściwości do obiektu authenticationSettings
+
+            services.AddSingleton(authenticationSettings);
+
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "Bearer";
+                option.DefaultScheme = "Bearer";
+                option.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = authenticationSettings.JwtIssuer,
+                    ValidAudience = authenticationSettings.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+                };
+            });
 
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
@@ -76,6 +100,7 @@ namespace RestaurantAPI
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMiddleware<TimeRequestMiddleware>();
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
 
             app.UseRouting();
