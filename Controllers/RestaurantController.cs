@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
@@ -13,6 +14,7 @@ namespace RestaurantAPI.Controllers
 {
     [Route("api/restaurant")]
     [ApiController] // automatycznie wywołuje walidację modelu ModelState.isValid..
+    [Authorize]
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantDbContext _dbContext;
@@ -34,6 +36,7 @@ namespace RestaurantAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "MinimumAdminAccess")]
         [HttpDelete("{id}")]
         public ActionResult DeleteRestaurant([FromRoute] int id)
         {
@@ -43,6 +46,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
             var id = _restaurantService.CreateRestaurant(dto);
@@ -51,6 +55,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "MinimumManagerAccess")]
         public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant()
         {
             var results = _restaurantService.GetAllRestaurants();
@@ -62,6 +67,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous] // mimo atrybutu autoryzacji, to zapytanie może być użyte bez logowania
         public ActionResult<RestaurantDto> GetRestaurant([FromRoute] int id)
         {
             var restaurant = _restaurantService.GetById(id);

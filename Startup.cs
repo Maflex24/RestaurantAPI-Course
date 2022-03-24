@@ -62,6 +62,12 @@ namespace RestaurantAPI
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MinimumManagerAccess", builder => builder.RequireClaim("RoleId", "2", "3"));
+                options.AddPolicy("MinimumAdminAccess", builder => builder.RequireClaim("RoleId", "3"));
+            });
+
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
@@ -103,10 +109,9 @@ namespace RestaurantAPI
             app.UseAuthentication();
             app.UseHttpsRedirection();
 
+
             app.UseRouting();
-
-            //app.UseAuthorization();
-
+            app.UseAuthorization(); // musi być pomiędzy UserRouting, a UseEndpoints!
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
