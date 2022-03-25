@@ -36,7 +36,7 @@ namespace RestaurantAPI.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "MinimumAdminAccess")]
+        [Authorize(Policy = "Minimum18YearsOld")]
         [HttpDelete("{id}")]
         public ActionResult DeleteRestaurant([FromRoute] int id)
         {
@@ -55,7 +55,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "MinimumManagerAccess")]
+        //[Authorize(Policy = "MinimumManagerAccess")]
         public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant()
         {
             var results = _restaurantService.GetAllRestaurants();

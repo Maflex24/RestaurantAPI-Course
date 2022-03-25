@@ -14,9 +14,11 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using RestaurantAPI.Authentications;
+using RestaurantAPI.Authorization;
 using RestaurantAPI.Controllers;
 using RestaurantAPI.Entitites;
 using RestaurantAPI.Middleware;
@@ -66,8 +68,10 @@ namespace RestaurantAPI
             {
                 options.AddPolicy("MinimumManagerAccess", builder => builder.RequireClaim("RoleId", "2", "3"));
                 options.AddPolicy("MinimumAdminAccess", builder => builder.RequireClaim("RoleId", "3"));
+                options.AddPolicy("Minimum18YearsOld", builder => builder.AddRequirements(new MinimumAgeRequirement(18)));
             });
 
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
