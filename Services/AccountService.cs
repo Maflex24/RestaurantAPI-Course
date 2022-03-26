@@ -81,6 +81,7 @@ namespace RestaurantAPI.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.GivenName, user.Email),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
                 new Claim("RoleId", $"{user.RoleId}"),

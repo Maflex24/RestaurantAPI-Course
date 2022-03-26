@@ -18,14 +18,17 @@ namespace RestaurantAPI.Authorization
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
         {
+            var userEmail = context.User.FindFirst(c => c.Type == ClaimTypes.GivenName).Value;
+
             if (!context.User.HasClaim(c => c.Type == "DateOfBirth"))
+            {
+                _logger.LogInformation($" User [{userEmail}] has no specified date of birth");
                 throw new DateOfBirthNotDefined("User has not defined date of birth");
+            }
 
             var dateOfBirth = DateTime.Parse(context.User.FindFirst(c => c.Type == "DateOfBirth").Value);
 
-            var userEmail = context.User.FindFirst(c => c.Type == ClaimTypes.Name).Value;
-
-            string log = $"User [{userEmail}] with date of birth: [{dateOfBirth:yyyy-MM-dd}] Authorization of [Minimum18YearsOld]";
+            string log = $" User [{userEmail}] with date of birth: [{dateOfBirth:yyyy-MM-dd}] Authorization of [Minimum18YearsOld]";
             var addedYears = dateOfBirth.AddYears(requirement.MinimumAge);
 
             if (addedYears <= DateTime.Now)
