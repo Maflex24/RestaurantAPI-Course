@@ -22,6 +22,10 @@ namespace RestaurantAPI.Middleware
             {
                 await next.Invoke(context); // próbujemy wywołać następny middleware, przekazujemy kontekst http
             }
+            catch (ForbidException forbidException)
+            {
+                context.Response.StatusCode = 403;
+            }
             catch (NotFoundException notFoundException)
             {
                 //_logger.LogError(notFoundException, notFoundException.Message);

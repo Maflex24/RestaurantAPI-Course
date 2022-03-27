@@ -30,25 +30,25 @@ namespace RestaurantAPI.Entitites
                     _dbContext.SaveChanges();
                 }
 
-                if (!_dbContext.Users.Any())
-                {
-                    var users = GetUsers();
+                //if (!_dbContext.Users.Any())
+                //{
+                //    var users = GetUsers();
 
-                    foreach (var user in users)
-                    {
-                        user.PasswordHash = _passwordHasher.HashPassword(user, "pass1234");
-                    }
+                //    foreach (var user in users)
+                //    {
+                //        user.PasswordHash = _passwordHasher.HashPassword(user, "pass1234");
+                //    }
 
-                    _dbContext.Users.AddRange(users);
-                    _dbContext.SaveChanges();
-                }
+                //    _dbContext.Users.AddRange(users);
+                //    _dbContext.SaveChanges();
+                //}
 
-                if (!_dbContext.Restaurants.Any()) // check is any row in table
-                {
-                    var restaurants = GetRestaurants();
-                    _dbContext.Restaurants.AddRange(restaurants);
-                    _dbContext.SaveChanges();
-                }
+                //if (!_dbContext.Restaurants.Any()) // check is any row in table
+                //{
+                //    var restaurants = GetRestaurants();
+                //    _dbContext.Restaurants.AddRange(restaurants);
+                //    _dbContext.SaveChanges();
+                //}
 
             }
         }
@@ -150,11 +150,11 @@ namespace RestaurantAPI.Entitites
                     //    .Users
                     //    .FirstOrDefault(u => u.FirstName == "T"),
 
-                    //OwnerId = _dbContext
-                    //    .Users
-                    //    .Where(u => u.FirstName == "T")
-                    //    .Select(u => u.Id)
-                    //    .FirstOrDefault(),
+                    CreatedById = _dbContext
+                        .Users
+                        .Where(u => u.FirstName == "T")
+                        .Select(u => u.Id)
+                        .FirstOrDefault(),
                     Description = "T-Restaurant",
                     Category = "T-Restaurant",
                     ContactEmail = "trestaurant@mail.com",
@@ -205,11 +205,11 @@ namespace RestaurantAPI.Entitites
                     //    .Users
                     //    .FirstOrDefault(u => u.FirstName == "B"),
 
-                    //OwnerId = _dbContext
-                    //    .Users
-                    //    .Where(u => u.FirstName == "B")
-                    //    .Select(u => u.Id)
-                    //    .FirstOrDefault(),
+                    CreatedById = _dbContext
+                        .Users
+                        .Where(u => u.FirstName == "B")
+                        .Select(u => u.Id)
+                        .FirstOrDefault(),
                     Description = "T-Restaurant",
                     Category = "T-Restaurant",
                     ContactEmail = "trestaurant@mail.com",
@@ -260,11 +260,11 @@ namespace RestaurantAPI.Entitites
                     //    .Users
                     //    .FirstOrDefault(u => u.FirstName == "C"),
 
-                    //OwnerId = _dbContext
-                    //    .Users
-                    //    .Where(u => u.FirstName == "C")
-                    //    .Select(u => u.Id)
-                    //    .FirstOrDefault(),
+                    CreatedById = _dbContext
+                        .Users
+                        .Where(u => u.FirstName == "C")
+                        .Select(u => u.Id)
+                        .FirstOrDefault(),
                     Description = "T-Restaurant",
                     Category = "T-Restaurant",
                     ContactEmail = "trestaurant@mail.com",

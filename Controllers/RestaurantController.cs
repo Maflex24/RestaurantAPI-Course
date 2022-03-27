@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,16 +32,16 @@ namespace RestaurantAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateRestaurant([FromRoute] int id, [FromBody] RestaurantModifyDto dto)
         {
-            _restaurantService.UpdateRestaurant(id, dto);
+            _restaurantService.UpdateRestaurant(id, dto, User);
 
             return Ok();
         }
 
-        [Authorize(Policy = "Minimum18YearsOld")]
+        //[Authorize(Policy = "Minimum18YearsOld")]
         [HttpDelete("{id}")]
         public ActionResult DeleteRestaurant([FromRoute] int id)
         {
-            _restaurantService.DeleteRestaurant(id);
+            _restaurantService.DeleteRestaurant(id, User);
 
             return NoContent();
         }
@@ -49,7 +50,8 @@ namespace RestaurantAPI.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
-            var id = _restaurantService.CreateRestaurant(dto);
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var id = _restaurantService.CreateRestaurant(dto, userId);
 
             return Created($"/api/restaurant/{id}", null);
         }

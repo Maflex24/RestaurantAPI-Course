@@ -72,12 +72,15 @@ namespace RestaurantAPI
             });
 
             services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
 
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddHttpContextAccessor(); // dzięki tej linii działa UserContextService, bo jesteśmy w stanie wstrzyknąć Ihttpcontextaccesor do tej klasy
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IDishService, DishService>();
             services.AddScoped<IAccountService, AccountService>();

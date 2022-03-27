@@ -48,7 +48,7 @@ namespace RestaurantAPI.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("OwnerId")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -56,7 +56,7 @@ namespace RestaurantAPI.Migrations
                     b.HasIndex("AddressId")
                         .IsUnique();
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Restaurants");
                 });
@@ -175,7 +175,7 @@ namespace RestaurantAPI.Migrations
 
                     b.HasOne("RestaurantAPI.Entitites.User", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -15,14 +15,14 @@ namespace RestaurantAPI.Migrations
                 table: "Restaurants");
 
             migrationBuilder.DropColumn(
-                name: "OwnerId",
+                name: "CreatedById",
                 table: "Restaurants");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "OwnerId",
+                name: "CreatedById",
                 table: "Restaurants",
                 type: "int",
                 nullable: false,
@@ -31,12 +31,12 @@ namespace RestaurantAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Restaurants_OwnerId",
                 table: "Restaurants",
-                column: "OwnerId");
+                column: "CreatedById");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Restaurants_Users_OwnerId",
                 table: "Restaurants",
-                column: "OwnerId",
+                column: "CreatedById",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

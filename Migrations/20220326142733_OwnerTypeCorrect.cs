@@ -13,7 +13,7 @@ namespace RestaurantAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "ownerId",
                 table: "Restaurants",
-                newName: "OwnerId");
+                newName: "CreatedById");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Restaurants_ownerId",
@@ -23,7 +23,7 @@ namespace RestaurantAPI.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_Restaurants_Users_OwnerId",
                 table: "Restaurants",
-                column: "OwnerId",
+                column: "CreatedById",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -36,7 +36,7 @@ namespace RestaurantAPI.Migrations
                 table: "Restaurants");
 
             migrationBuilder.RenameColumn(
-                name: "OwnerId",
+                name: "CreatedById",
                 table: "Restaurants",
                 newName: "ownerId");
 
