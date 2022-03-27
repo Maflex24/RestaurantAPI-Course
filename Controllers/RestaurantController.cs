@@ -57,6 +57,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Minimum2RestaurantsIsCreatedByThisUser")]
         //[Authorize(Policy = "MinimumManagerAccess")]
         public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant()
         {

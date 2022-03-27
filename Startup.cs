@@ -69,10 +69,12 @@ namespace RestaurantAPI
                 options.AddPolicy("MinimumManagerAccess", builder => builder.RequireClaim("RoleId", "2", "3"));
                 options.AddPolicy("MinimumAdminAccess", builder => builder.RequireClaim("RoleId", "3"));
                 options.AddPolicy("Minimum18YearsOld", builder => builder.AddRequirements(new MinimumAgeRequirement(18)));
+                options.AddPolicy("Minimum2RestaurantsIsCreatedByThisUser", builder => builder.AddRequirements(new MinimumRestaurantRequirement(2)));
             });
 
-            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, MinimumRestaurantRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
