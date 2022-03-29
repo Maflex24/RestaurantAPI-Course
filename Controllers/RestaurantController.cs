@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -57,11 +58,11 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "Minimum2RestaurantsIsCreatedByThisUser")]
+        //[Authorize(Policy = "Minimum2RestaurantsIsCreatedByThisUser")]
         //[Authorize(Policy = "MinimumManagerAccess")]
-        public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant()
+        public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant([FromQuery] string searchPhrase)
         {
-            var results = _restaurantService.GetAllRestaurants();
+            var results = _restaurantService.GetAllRestaurants(searchPhrase);
 
             if (results.Any())
                 return Ok(results);

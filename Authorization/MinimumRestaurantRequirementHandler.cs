@@ -22,7 +22,7 @@ namespace RestaurantAPI.Authorization
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumRestaurantRequirement requirement)
         {
             _logger.LogInformation("HandleRequirementAsync of MinimumRestaurantRequirementHandler was called");
-            var userId = int.Parse(context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            int? userId = int.Parse(context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             var restaurantsCreated = _dbContext
                 .Restaurants

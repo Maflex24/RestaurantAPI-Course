@@ -20,7 +20,7 @@ namespace RestaurantAPI.Services
     public interface IRestaurantService
     {
         ActionResult<RestaurantDto> GetById(int id);
-        IEnumerable<RestaurantDto> GetAllRestaurants();
+        IEnumerable<RestaurantDto> GetAllRestaurants(string searchPhrase);
         int CreateRestaurant(CreateRestaurantDto dto);
         void DeleteRestaurant(int id);
         void UpdateRestaurant(int id, RestaurantModifyDto dto);
@@ -60,10 +60,12 @@ namespace RestaurantAPI.Services
             return results;
         }
 
-        public IEnumerable<RestaurantDto> GetAllRestaurants()
+        public IEnumerable<RestaurantDto> GetAllRestaurants(string searchPhrase)
         {
             var restaurants = _dbContext
                 .Restaurants
+                .Where(r => searchPhrase == null || (r.Name.ToLower().Contains(searchPhrase.ToLower())
+                            || r.Description.ToLower().Contains(searchPhrase.ToLower())))
                 .Include(r => r.Address)
                 .Include(r => r.Dishes)
                 .ToList();
@@ -72,6 +74,7 @@ namespace RestaurantAPI.Services
 
             return restaurantsDtos;
         }
+
 
         public int CreateRestaurant(CreateRestaurantDto dto)
         {
