@@ -60,11 +60,11 @@ namespace RestaurantAPI.Controllers
         [HttpGet]
         //[Authorize(Policy = "Minimum2RestaurantsIsCreatedByThisUser")]
         //[Authorize(Policy = "MinimumManagerAccess")]
-        public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant([FromQuery] string searchPhrase)
+        public ActionResult<IEnumerable<RestaurantDto>> GetAllRestaurant([FromQuery] RestaurantQuery restaurantQuery)
         {
-            var results = _restaurantService.GetAllRestaurants(searchPhrase);
+            var results = _restaurantService.GetAllRestaurants(restaurantQuery);
 
-            if (results.Any())
+            if (results != null)
                 return Ok(results);
 
             return BadRequest("Records not funded");
