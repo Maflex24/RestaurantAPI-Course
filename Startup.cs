@@ -115,6 +115,7 @@ namespace RestaurantAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RestaurantSeeder seeder)
         {
+            app.UseStaticFiles();
             app.UseCors("FrontEndClient");
             seeder.Seed();
 
