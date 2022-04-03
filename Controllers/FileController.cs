@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -27,5 +28,25 @@ namespace RestaurantAPI.Controllers
 
             return File(fileContent, fileContentTypeType, fileName);
         }
+
+        [HttpPost]
+        public ActionResult Upload([FromForm] IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var rootPath = Directory.GetCurrentDirectory();
+                var filePath = $"{rootPath}/PrivateFiles/{file.FileName}";
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
     }
 }
