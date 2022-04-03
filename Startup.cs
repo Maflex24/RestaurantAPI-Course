@@ -94,6 +94,17 @@ namespace RestaurantAPI
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+            // CORS Policy - witohut this frontend browser application can't access to data from server, it's blocked by browser
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEndClient", builder =>
+                builder.AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithOrigins(Configuration["AllowedOrigins"]) // address of app, which we can give access
+
+                );
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestaurantAPI", Version = "v1" });
@@ -104,6 +115,7 @@ namespace RestaurantAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RestaurantSeeder seeder)
         {
+            app.UseCors("FrontEndClient");
             seeder.Seed();
 
             if (env.IsDevelopment())
