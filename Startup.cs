@@ -39,12 +39,10 @@ namespace RestaurantAPI
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // tu będziemy wstrzykiwać zależności do wbudowanego kontenera dependency injection
-        // tu będziemy też konfigurować różne serwisy, np. związane z autentykacja uzytkowników
         public void ConfigureServices(IServiceCollection services)
         {
             var authenticationSettings = new AuthenticationSettings();
-            Configuration.GetSection("Authentication").Bind(authenticationSettings); //pobiera(binduje) właściwości do obiektu authenticationSettings
+            Configuration.GetSection("Authentication").Bind(authenticationSettings); //get(bind) object properties to authenticationSettings
 
             services.AddSingleton(authenticationSettings);
 
@@ -76,7 +74,6 @@ namespace RestaurantAPI
             services.AddScoped<IAuthorizationHandler, MinimumRestaurantRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
-            //services.AddControllers();
             services.AddControllers().AddFluentValidation();
 
             services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RestaurantDbConnection")));
@@ -85,7 +82,7 @@ namespace RestaurantAPI
             services.AddAutoMapper(this.GetType().Assembly);
 
             services.AddScoped<IUserContextService, UserContextService>();
-            services.AddHttpContextAccessor(); // dzięki tej linii działa UserContextService, bo jesteśmy w stanie wstrzyknąć Ihttpcontextaccesor do tej klasy
+            services.AddHttpContextAccessor(); // this is why we can use UserContextService, because we can inject Ihttpcontextaccesor to class
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IDishService, DishService>();
             services.AddScoped<IAccountService, AccountService>();
@@ -114,8 +111,8 @@ namespace RestaurantAPI
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RestaurantSeeder seeder)
         {
             app.UseResponseCaching();
@@ -138,7 +135,7 @@ namespace RestaurantAPI
 
 
             app.UseRouting();
-            app.UseAuthorization(); // musi być pomiędzy UserRouting, a UseEndpoints!
+            app.UseAuthorization(); // need to be betweeen UserRouting and UseEndpoints!
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -146,55 +143,3 @@ namespace RestaurantAPI
         }
     }
 }
-
-
-// Wersja z komentarzami: 
-//public class Startup
-//{
-//    public Startup(IConfiguration configuration)
-//    {
-//        Configuration = configuration;
-//    }
-
-//    public IConfiguration Configuration { get; }
-
-//    // This method gets called by the runtime. Use this method to add services to the container.
-//    // tu będziemy wstrzykiwać zależności do wbudowanego kontenera dependency injection
-//    // tu będziemy też konfigurować różne serwisy, np. związane z autentykacja uzytkowników
-//    public void ConfigureServices(IServiceCollection services)
-//    {
-//        services.AddControllers();
-//        services.AddDbContext<RestaurantDbContext>();
-//        services.AddScoped<RestaurantSeeder>();
-//        services.AddAutoMapper(this.GetType().Assembly);
-//        services.AddSwaggerGen(c =>
-//        {
-//            c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestaurantAPI", Version = "v1" });
-//        });
-//    }
-
-//    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-//    // będzie konfigurować wszystkie niezbędne metody przepływu, przez które musi przejść zapytanie do naszego API przed zwróceniem odpowiedzi
-//    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RestaurantSeeder seeder) // każda metoda przzepływu w metodzie configure, wywoływana na application builderze jest nazwana middleware. Middleware to kawałek kodu, który ma dostęp do dwóch rzeczy: kontekst zapytania, czyli informacje o czasowniku http, nagłówkach i adresie. Drugą rzeczą jest dostęp do następnego z kolei middleware
-//    {
-//        seeder.Seed();
-
-//        if (env.IsDevelopment())
-//        {
-//            app.UseDeveloperExceptionPage();
-//            app.UseSwagger();
-//            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantAPI v1"));
-//        }
-
-//        app.UseHttpsRedirection(); // jeśli klient wyśle zapytanie na adres bez protokołu https, jego zapytanie zostanie automatycznie przekierowane na adres z protokołem https
-
-//        app.UseRouting();
-
-//        //app.UseAuthorization();
-
-//        app.UseEndpoints(endpoints =>
-//        {
-//            endpoints.MapControllers();
-//        });
-//    }
-//}
