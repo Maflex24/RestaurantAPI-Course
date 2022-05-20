@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Controllers;
 using RestaurantAPI.Entities;
 
@@ -23,6 +24,12 @@ namespace RestaurantAPI.Entitites
         {
             if (_dbContext.Database.CanConnect())
             {
+                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
+                if (pendingMigrations != null && pendingMigrations.Any())
+                {
+                    _dbContext.Database.Migrate(); // any changes in migrations will automatically update in database
+                }
+
                 if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
@@ -30,25 +37,25 @@ namespace RestaurantAPI.Entitites
                     _dbContext.SaveChanges();
                 }
 
-                //if (!_dbContext.Users.Any())
-                //{
-                //    var users = GetUsers();
+                if (!_dbContext.Users.Any())
+                {
+                    var users = GetUsers();
 
-                //    foreach (var user in users)
-                //    {
-                //        user.PasswordHash = _passwordHasher.HashPassword(user, "pass1234");
-                //    }
+                    foreach (var user in users)
+                    {
+                        user.PasswordHash = _passwordHasher.HashPassword(user, "pass1234");
+                    }
 
-                //    _dbContext.Users.AddRange(users);
-                //    _dbContext.SaveChanges();
-                //}
+                    _dbContext.Users.AddRange(users);
+                    _dbContext.SaveChanges();
+                }
 
-                //if (!_dbContext.Restaurants.Any()) // check is any row in table
-                //{
-                //    var restaurants = GetRestaurants();
-                //    _dbContext.Restaurants.AddRange(restaurants);
-                //    _dbContext.SaveChanges();
-                //}
+                if (!_dbContext.Restaurants.Any()) // check is any row in table
+                {
+                    var restaurants = GetRestaurants();
+                    _dbContext.Restaurants.AddRange(restaurants);
+                    _dbContext.SaveChanges();
+                }
 
             }
         }

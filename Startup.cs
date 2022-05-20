@@ -16,6 +16,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RestaurantAPI.Authentications;
 using RestaurantAPI.Authorization;
@@ -77,7 +78,9 @@ namespace RestaurantAPI
             services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
             //services.AddControllers();
             services.AddControllers().AddFluentValidation();
-            services.AddDbContext<RestaurantDbContext>();
+
+            services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RestaurantDbConnection")));
+
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
 
@@ -115,6 +118,7 @@ namespace RestaurantAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RestaurantSeeder seeder)
         {
+            app.UseResponseCaching();
             app.UseStaticFiles();
             app.UseCors("FrontEndClient");
             seeder.Seed();

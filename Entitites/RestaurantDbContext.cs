@@ -6,14 +6,16 @@ namespace RestaurantAPI.Controllers
 {
     public class RestaurantDbContext : DbContext
     {
+        public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options) : base(options)
+        {
+
+        }
+
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-
-
-        private string _connectionString = "Server=(localdb)\\LocalDbServer;Database=RestaurantDb;Trusted_Connection=True";
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,12 +49,6 @@ namespace RestaurantAPI.Controllers
             modelBuilder.Entity<Address>()
                 .Property(a => a.Street)
                 .HasMaxLength(50);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(_connectionString);
         }
     }
 }
